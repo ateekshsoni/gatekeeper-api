@@ -210,8 +210,8 @@ console.log("📋 Enhanced configuration loaded:", {
   redis: enhancedConfig.REDIS_URL ? "✅ Configured" : "⚠️ Disabled",
 });
 
-export default {
-  CONFIG : enhancedConfig,
+export  {
+  enhancedConfig,
   sanitizeConfigForLogging,
   validateConfiguration,
   parseBoolean,
