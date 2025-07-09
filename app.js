@@ -4,16 +4,15 @@ import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import helmet from "helmet";
 import cors from "cors";
-import ExpressMongoSanitize from "express-mongo-sanitize";
 import hpp from "hpp";
 import rateLimit from "express-rate-limit";
 import compression from "compression";
 
 //importing database connection
 import { connectDB } from "./src/database/connection.js";
+import { config } from "./src/config/index.js";
 
 //initializing express app
-dotenv.config();
 const app = express();
 
 //trust proxy settings for prduction environment
@@ -48,14 +47,13 @@ const generalLimiter = rateLimit({
 });
 
 app.use(generalLimiter);
-app.use(ExpressMongoSanitize());
 app.use(hpp());
 app.use(compression());
 
 //cors configuration
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || [
+    origin: config.CLIENT_URL || [
       "http://localhost:3000",
       "https://localhost:5173",
     ],
@@ -88,7 +86,7 @@ app.get("/", (req, res) => {
 });
 
 //health check endpoint
-app.get("health", (req, res) => {
+app.get("/health", (req, res) => {
   res.status(200).json({
     status: "ok",
     message: "Server is running smoothly",
@@ -97,7 +95,7 @@ app.get("health", (req, res) => {
 });
 
 //404 handler for undefined routes
-app.use("*", (req, res) => {
+app.use((req, res, next) => {
   res.status(404).json({
     success: false,
     message: "Endpoint not found",
@@ -118,7 +116,7 @@ app.use((error, req, res, next) => {
     success: false,
     message: message,
     timestamp: new Date().toISOString(),
-    ...(process.env.NODE_ENV === "development" && { stack: error.stack }),
+    ...(config.NODE_ENV === "development" && { stack: error.stack }),
   });
 });
 

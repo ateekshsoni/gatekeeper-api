@@ -82,7 +82,7 @@ function validateConfiguration(config) {
   }
 
   if (errors.length > 0) {
-    throw new Error(`Configuration validation failed:\n${errors.join("\n")}`);
+    throw Error(`Configuration validation failed:\n${errors.join("\n")}`);
   }
 }
 
@@ -102,18 +102,18 @@ const enhancedConfig = {
   HOST: process.env.HOST || "localhost",
 
   // Database configuration
-  MONGODB_URI: process.env.MONGODB_URI || "mongodb://127.0.1:27017/gatekeeper",
+  MONGODB_URI: process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/gatekeeper",
   MONGODB_TEST_URI:
-    process.env.MONGODB_TEST_URI || "mongodb://127.1:27017/gatekeeper_test",
+    process.env.MONGODB_TEST_URI || "mongodb://127.0.0.1:27017/gatekeeper_test",
 
   //Database pool settings
   DB_MAX_POOL_SIZE: parseInteger(
     process.env.DB_MAX_POOL_SIZE,
-    IS_PRODUCTION ? 20 : 10
+    isProduction ? 20 : 10
   ),
   DB_MIN_POOL_SIZE: parseInteger(
     process.env.DB_MIN_POOL_SIZE,
-    IS_PRODUCTION ? 5 : 2
+    isProduction ? 5 : 2
   ),
   DB_MAX_IDLE_TIME: parseInteger(process.env.DB_MAX_IDLE_TIME, 30000),
   DB_SERVER_SELECTION_TIMEOUT: parseInteger(
@@ -139,9 +139,9 @@ const enhancedConfig = {
   SESSION_SECRET:
     process.env.SESSION_SECRET || "session-secret-change-in-production",
   COOKIE_SECRET: process.env.COOKIE_SECRET,
-  COOKIE_SECURE: parseBoolean(process.env.COOKIE_SECURE, IS_PRODUCTION),
+  COOKIE_SECURE: parseBoolean(process.env.COOKIE_SECURE, isProduction),
   COOKIE_SAME_SITE:
-    process.env.COOKIE_SAME_SITE || (IS_PRODUCTION ? "strict" : "lax"),
+    process.env.COOKIE_SAME_SITE || (isProduction ? "strict" : "lax"),
   COOKIE_MAX_AGE: parseInteger(process.env.COOKIE_MAX_AGE, 24 * 60 * 60 * 1000), // 24 hours
 
   //Rate Limiting Configuration
@@ -178,7 +178,7 @@ const enhancedConfig = {
   ),
   HEALTH_CHECK_INTERVAL: parseInteger(process.env.HEALTH_CHECK_INTERVAL, 60000),
   MEMORY_THRESHOLD: parseInteger(process.env.MEMORY_THRESHOLD, 500), // MB
-  ENABLE_METRICS: parseBoolean(process.env.ENABLE_METRICS, IS_PRODUCTION),
+  ENABLE_METRICS: parseBoolean(process.env.ENABLE_METRICS, isProduction),
   METRICS_PORT: parseInteger(process.env.METRICS_PORT, 9090),
 };
 

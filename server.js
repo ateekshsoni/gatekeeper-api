@@ -1,9 +1,9 @@
 import http from "http";
-import app from "./app";
+import app from "./app.js";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import { start } from "repl";
-dotenv.config();
+import { config } from "./src/config/index.js";
 
 const PORT = process.env.PORT || 3000;
 const host = process.env.HOST || "localhost" || "0.0.0.0";
@@ -27,8 +27,8 @@ const startServer = () => {
     //start the server
     server.listen(PORT, host, () => {
       console.log("server started successfully");
-      console.log(`🌍 Server is running at http://${host}:${port}`);
-      console.log(`🏥 Health check: http://${host}:${port}/health`);
+      console.log(`🌍 Server is running at http://${host}:${PORT}`);
+      console.log(`🏥 Health check: http://${host}:${PORT}/health`);
       console.log(
         `📊 Memory usage: ${Math.round(
           process.memoryUsage().heapUsed / 1024 / 1024
@@ -41,7 +41,7 @@ const startServer = () => {
       if (error.syscall !== "listen") {
         throw error;
       }
-      const bind = typeof port === "string" ? `Pipe ${port}` : `Port ${port}`;
+      const bind = typeof PORT === "string" ? `Pipe ${PORT}` : `Port ${PORT}`;
 
       switch (error.code) {
         case "EACCES":
@@ -51,7 +51,7 @@ const startServer = () => {
         case "EADDRINUSE":
           console.error(`❌ ${bind} is already in use`);
           console.log(
-            `💡 Try: npm run kill:port or lsof -ti:${port} | xargs kill -9`
+            `💡 Try: npm run kill:port or lsof -ti:${PORT} | xargs kill -9`
           );
           process.exit(1);
           break;
@@ -125,7 +125,7 @@ process.on("warning", (warning) => {
   console.warn("Stack trace:", warning.stack);
 });
 
-if (process.env.NODE_ENV !== "test") {
+if (config.NODE_ENV !== "test") {
   setInterval(() => {
     const memUsage = process.memoryUsage();
     const formatMB = (bytes) => (bytes / 1024 / 1024).toFixed(2) + " MB";

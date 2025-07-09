@@ -91,21 +91,22 @@ const getDataBaseConfig = (env = process.env.NODE_ENV || "development") => {
   };
 };
 const getConnectionUris = () => {
-  const env = process.env.NODE_ENV || "development";
+  const env = (process.env.NODE_ENV || "development").toLowerCase();
 
-  return {
+  const uriMap = {
     development: [
       process.env.MONGODB_URI,
-      process.env.MONGO_URI,
       "mongodb://127.0.0.1:27017/auth_system",
     ],
     production: [process.env.MONGODB_URI, process.env.MONGO_URI],
     test: [
       process.env.MONGODB_TEST_URI,
       process.env.MONGO_TEST_URI,
-      "mongodb://127.0.0.1:27017/versenest_test",
+      "mongodb://127.0.0.1:27017/auth_system_test",
     ],
-  }[env] || [];
+  };
+
+  return uriMap[env] || [];
 };
 
 export  { getDataBaseConfig , getConnectionUris, config };

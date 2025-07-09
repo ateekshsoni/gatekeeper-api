@@ -5,11 +5,11 @@ import {
   parseInteger,
   sanitizeConfigForLogging,
   validateConfiguration,
-} from "./enhanced";
+} from "./enhanced.js";
 
 const config = enhancedConfig;
 
-config.MONGODB_URI =
+config.MONGO_URI =
   enhancedConfig.MONGODB_URI || "mongodb://localhost:27017/gatekeeper-api";
 
 export {
@@ -19,6 +19,5 @@ export {
   parseArray,
   parseBoolean,
   parseInteger,
-  default as enhancedConfig,
-  config as config,
-} from "./enhanced";
+  enhancedConfig,
+};
