@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import crypto from "crypto";
 import { config } from "../config/index.js";
 
 const userSchema = new mongoose.Schema(
@@ -250,16 +251,16 @@ userSchema.methods.clearAllRefreshTokens = function() {
 
 // Password reset
 userSchema.methods.generatePasswordReset = function() {
-  const resetToken = require('crypto').randomBytes(32).toString('hex');
-  this.resetPasswordToken = require('crypto').createHash('sha256').update(resetToken).digest('hex');
+  const resetToken = crypto.randomBytes(32).toString('hex');
+  this.resetPasswordToken = crypto.createHash('sha256').update(resetToken).digest('hex');
   this.resetPasswordExpire = Date.now() + 10 * 60 * 1000; // 10 minutes
   return resetToken;
 };
 
 // Email verification
 userSchema.methods.generateEmailVerification = function() {
-  const verifyToken = require('crypto').randomBytes(32).toString('hex');
-  this.verificationToken = require('crypto').createHash('sha256').update(verifyToken).digest('hex');
+  const verifyToken = crypto.randomBytes(32).toString('hex');
+  this.verificationToken = crypto.createHash('sha256').update(verifyToken).digest('hex');
   return verifyToken;
 };
 
@@ -275,7 +276,7 @@ userSchema.statics.findByEmail = function (email) {
 };
 
 userSchema.statics.findByResetToken = function(token) {
-  const hashedToken = require('crypto').createHash('sha256').update(token).digest('hex');
+  const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
   return this.findOne({
     resetPasswordToken: hashedToken,
     resetPasswordExpire: { $gt: Date.now() }
@@ -283,7 +284,7 @@ userSchema.statics.findByResetToken = function(token) {
 };
 
 userSchema.statics.findByVerificationToken = function(token) {
-  const hashedToken = require('crypto').createHash('sha256').update(token).digest('hex');
+  const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
   return this.findOne({
     verificationToken: hashedToken
   });

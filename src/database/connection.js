@@ -218,5 +218,19 @@ const healthCheck = async () => {
   };
 };
 
-export { initializeDatabase, healthCheck, connectDB, isConnected, getMongoUri };
+const disconnectDB = async () => {
+  try {
+    if (mongoose.connection.readyState !== 0) {
+      console.log("🔌 Disconnecting from MongoDB...");
+      await mongoose.disconnect();
+      isConnected = false;
+      console.log("✅ Database disconnected successfully");
+    }
+  } catch (error) {
+    console.error("❌ Error disconnecting from database:", error);
+    throw error;
+  }
+};
+
+export { initializeDatabase, healthCheck, connectDB, disconnectDB, isConnected, getMongoUri };
 export default mongoose;
