@@ -297,8 +297,7 @@ userSchema.methods.cleanupExpiredTokens = function() {
   return this.save();
 };
 
-// Indexes for better performance
-userSchema.index({ email: 1 });
+// Indexes for better performance (email already has unique index)
 userSchema.index({ resetPasswordToken: 1 });
 userSchema.index({ verificationToken: 1 });
 userSchema.index({ 'refreshTokens.token': 1 });
